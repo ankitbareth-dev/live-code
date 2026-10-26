@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Meridian Digital — design tokens & global styles
+   --------------------------------------------------------------------------
+   Single source of truth for shared design decisions. Tokens declared in
+   `@theme` are emitted as CSS custom properties on :root AND generate
+   Tailwind utilities (e.g. --color-primary -> bg-primary, text-primary,
+   border-primary). Components must consume these tokens; do not hardcode
+   colors, radii, or shadows in component code.
+   ========================================================================== */
+
+@theme {
+  /* ---- Typography ------------------------------------------------------ */
+  --font-sans:
+    "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+
+  /* Fluid size for page-level titles only; everything else uses the
+     default Tailwind scale. Max font weight in this UI is 600. */
+  --text-display: clamp(1.5rem, 1.25rem + 1vw, 1.875rem);
+  --text-display--line-height: 1.2;
+  --text-display--letter-spacing: -0.02em;
+  --text-display--font-weight: 600;
+
+  /* ---- Surfaces & borders ---------------------------------------------- */
+  --color-background: #f6f7f8;
+  --color-surface: #ffffff;
+  --color-surface-muted: #eef1f3;
+  --color-border: #e3e7ea;
+  --color-border-strong: #cdd4d9;
+
+  /* ---- Text ------------------------------------------------------------ */
+  --color-text-primary: #182230;
+  --color-text-secondary: #4d5761;
+  --color-text-muted: #667085; /* AA on white: use for >= 12px text only */
+  --color-text-disabled: #98a2b3;
+  --color-text-on-primary: #ffffff;
+
+  /* ---- Primary accent (deep teal) --------------------------------------- */
+  --color-primary: #0f766e;
+  --color-primary-hover: #115e59;
+  --color-primary-active: #134e4a;
+  --color-primary-soft: #e7f4f2;
+
+  /* ---- Feedback & status ------------------------------------------------ */
+  --color-success: #067647;
+  --color-success-soft: #ecfdf3;
+  --color-danger: #b42318;
+  --color-danger-hover: #912018;
+  --color-danger-soft: #fef3f2;
+  --color-warning: #b54708;
+  --color-warning-soft: #fffaeb;
+
+  /* ---- Radii ------------------------------------------------------------ */
+  --radius-control: 8px;
+  --radius-card: 10px;
+  --radius-overlay: 12px;
+
+  /* ---- Shadows (subtle, two-layer) --------------------------------------- */
+  --shadow-card: 0 1px 2px rgb(16 24 40 / 0.06), 0 1px 3px rgb(16 24 40 / 0.08);
+  --shadow-overlay:
+    0 8px 8px -4px rgb(16 24 40 / 0.04), 0 20px 24px -4px rgb(16 24 40 / 0.1);
+}
+
+/* Tokens consumed only in plain CSS, not as Tailwind utilities.
+   The teal ring sits outside the element (offset), so it stays visible
+   even against primary-colored surfaces. */
+:root {
+  --focus-ring: 2px solid var(--color-primary);
+  --focus-ring-offset: 2px;
+}
+
+@layer base {
+  html {
+    /* Reserves scrollbar space so opening a scroll-locked dialog
+       doesn't shift the layout. */
+    scrollbar-gutter: stable;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-background font-sans text-text-primary antialiased;
+    min-height: 100dvh;
+  }
+
+  /* Native controls (checkbox, radio, progress) follow the accent. */
+  body {
+    accent-color: var(--color-primary);
+  }
+
+  ::selection {
+    background-color: var(--color-primary-soft);
+  }
+
+  /* One consistent, visible focus indicator for every interactive element. */
+  :focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* Sticky action bars on mobile: keeps controls clear of the iOS home
+   indicator / Android gesture bar. */
+@utility pb-safe {
+  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+}
